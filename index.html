@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>SB 243 Companion Chatbots – Annotated</title>
+    <style>
+      :root { color-scheme: light; }
+      body {
+        margin: 0;
+        font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: #e4e7ef;
+        color: #1f2937;
+        line-height: 1.65;
+      }
+      .page {
+        max-width: 960px;
+        margin: 0 auto 3rem;
+        background: #ffffff;
+        padding: 2.5rem 2.25rem 3rem;
+        box-shadow: 0 22px 48px rgba(15, 23, 42, 0.12);
+      }
+      header {
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2rem;
+        color: #111827;
+      }
+      header .subtitle {
+        margin: 0.35rem 0 0;
+        color: #4b5563;
+        font-size: 1rem;
+        font-weight: 500;
+        letter-spacing: 0.015em;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.8rem;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem 1.1rem;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.95rem;
+        color: #374151;
+      }
+      .legend-swatch {
+        width: 0.85rem;
+        height: 0.85rem;
+        border-radius: 0.2rem;
+      }
+      .legend-swatch.scope { background: #1d4ed8; }
+      .legend-swatch.obligation { background: #15803d; }
+      .legend-swatch.enforcement { background: #dc2626; }
+      .legend-swatch.exception { background: #f97316; }
+      .toggle-button {
+        appearance: none;
+        border: none;
+        background: #1f2937;
+        color: #ffffff;
+        padding: 0.55rem 1.2rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.18);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color
+  0.2s ease;
+      }
+      .toggle-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.2);
+        background: #111827;
+      }
+      .toggle-button:focus-visible {
+        outline: 3px solid rgba(59, 130, 246, 0.7);
+        outline-offset: 2px;
+      }
+      p { margin: 0 0 1rem; }
+      .preface p { margin: 0.2rem 0; font-size: 0.97rem; }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.25rem 0 1rem;
+        color: #111827;
+      }
+      h3 {
+        font-size: 1.15rem;
+        margin: 1.75rem 0 0.75rem;
+        color: #111827;
+      }
+      h4 {
+        font-size: 1.05rem;
+        margin: 1.4rem 0 0.75rem;
+        font-weight: 600;
+        color: #111827;
+      }
+      h5 {
+        font-size: 1rem;
+        margin: 1.1rem 0 0.5rem;
+        font-weight: 600;
+        color: #111827;
+      }
+      .statute-section { margin-bottom: 1.8rem; }
+      .statute-section ol {
+        margin: 0.4rem 0 1rem;
+        padding-left: 1.5rem;
+      }
+      .statute-section ol ol { margin-top: 0.5rem; }
+      .statute-section li { margin: 0.5rem 0; }
+      .statute-section ol[type="a"] { list-style-type: lower-alpha; }
+      .statute-section ol[type="A"] { list-style-type: upper-alpha; }
+      .statute-section ol[type="1"] { list-style-type: decimal; }
+      .statute-section ol[type="a"] > li::marker { content: "(" counter(list-item,
+  lower-alpha) ") "; }
+      .statute-section ol[type="A"] > li::marker { content: "(" counter(list-item,
+  upper-alpha) ") "; }
+      .statute-section ol[type="1"] > li::marker { content: "(" counter(list-item,
+  decimal) ") "; }
+      .annotation {
+        position: relative;
+        display: inline;
+        background-image: linear-gradient(180deg, rgba(var(--annotation-color-rgb),
+  0) 62%, rgba(var(--annotation-color-rgb), 0.17) 62%);
+        border-bottom: 2px solid rgba(var(--annotation-color-rgb), 0.55);
+        padding: 0.05rem 0.1rem;
+        border-radius: 0.18rem;
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow
+  0.2s ease;
+        cursor: pointer;
+      }
+      .annotation::before {
+        content: "";
+        position: absolute;
+        top: -0.6rem;
+        left: 0.1rem;
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background-color: var(--annotation-color);
+        box-shadow: 0 0 0 2px #ffffff, 0 8px 18px rgba(var(--annotation-color-rgb),
+  0.45);
+      }
+      .annotation .annotation-note {
+        position: absolute;
+        left: 0;
+        transform: translateY(calc(-100% - 0.65rem));
+        background: #0f172a;
+        color: #f8fafc;
+        padding: 0.6rem 0.75rem;
+        border-radius: 0.55rem;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        width: max(18rem, 38ch);
+        max-width: min(40ch, calc(100vw - 4rem));
+        box-shadow: 0 18px 38px rgba(15, 23, 42, 0.35);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        z-index: 5;
+      }
+      .annotation .annotation-note::after {
+        content: "";
+        position: absolute;
+        bottom: -0.45rem;
+        left: 1.5rem;
+        border-width: 0.45rem 0.5rem 0 0.5rem;
+        border-style: solid;
+        border-color: #0f172a transparent transparent transparent;
+      }
+      .annotation:hover .annotation-note,
+      .annotation:focus .annotation-note,
+      .annotation:focus-visible .annotation-note,
+      .annotation.show-note .annotation-note {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(calc(-100% - 0.95rem));
+      }
+      .annotation:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(var(--annotation-color-rgb), 0.35);
+      }
+      .annotation-note strong {
+        display: block;
+        margin-bottom: 0.15rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-size: 0.75rem;
+        color: #cbd5f5;
+      }
+      .annotation-scope { --annotation-color: #1d4ed8; --annotation-color-rgb: 29,
+  78, 216; }
+      .annotation-obligation { --annotation-color: #15803d; --annotation-color-rgb:
+  21, 128, 61; }
+      .annotation-enforcement { --annotation-color: #dc2626; --annotation-color-rgb:
+  220, 38, 38; }
+      .annotation-exception { --annotation-color: #f97316; --annotation-color-rgb:
+  249, 115, 22; }
+      body.annotations-hidden .annotation {
+        background-image: none;
+        border-bottom-color: transparent;
+        cursor: text;
+      }
+      body.annotations-hidden .annotation::before { display: none; }
+      body.annotations-hidden .annotation .annotation-note { display: none !
+  important; }
+      @media (max-width: 720px) {
+        .page { padding: 2rem 1.25rem 2.5rem; }
+        .toggle-button { width: 100%; justify-content: center; }
+        .legend { gap: 0.5rem 1rem; }
+        .annotation .annotation-note {
+          max-width: calc(100vw - 3rem);
+          width: calc(100vw - 3rem);
+        }
+      }
+      @media print {
+        body { background: #ffffff; }
+        .page {
+          box-shadow: none;
+          margin: 0;
+          padding: 0.6in;
+        }
+        .toolbar { display: none; }
+        .annotation {
+          background-image: none;
+          border-bottom: 2px solid var(--annotation-color);
+          cursor: default;
+        }
+        .annotation::before { display: none; }
+        .annotation .annotation-note {
+          position: static;
+          transform: none;
+          opacity: 1 !important;
+          visibility: visible !important;
+          background: rgba(var(--annotation-color-rgb), 0.12);
+          color: #111827;
+          margin-top: 0.35rem;
+          border-left: 4px solid var(--annotation-color);
+          border-radius: 0.3rem;
+          box-shadow: none;
+          padding: 0.45rem 0.6rem;
+        }
+        .annotation .annotation-note::after { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <h1>Senate Bill No. 243 &mdash; Companion Chatbots</h1>
+        <p class="subtitle">California Legislature &bull; 2025 Session</p>
+      </header>
+      <div class="toolbar">
+        <div class="legend" aria-label="Annotation legend">
+          <span class="legend-item"><span class="legend-swatch scope" aria-
+  hidden="true"></span>Scope of the Law</span>
+          <span class="legend-item"><span class="legend-swatch obligation" aria-
+  hidden="true"></span>Obligations</span>
+          <span class="legend-item"><span class="legend-swatch enforcement" aria-
+  hidden="true"></span>Enforcement &amp; Penalties</span>
+          <span class="legend-item"><span class="legend-swatch exception" aria-
+  hidden="true"></span>Exceptions &amp; Safe Harbors</span>
+        </div>
+        <button id="toggleAnnotations" class="toggle-button" type="button" aria-
+  pressed="false">Hide Annotations</button>
+      </div>
+      <article class="law-text">
+        <section class="preface">
+          <p>Senate Bill No. 243</p>
+          <p>Passed the Senate September 11, 2025</p>
+          <p>Secretary of the Senate</p>
+          <p>Passed the Assembly September 10, 2025</p>
+          <p>Chief Clerk of the Assembly</p>
+          <p>This bill was received by the Governor this day of , 2025, at o'clock
+  m.</p>
+          <p>Private Secretary of the Governor</p>
+          <p>CHAPTER</p>
+          <p>An act to add Chapter 22.6 (commencing with Section 22601) to Division 8
+  of the Business and Professions Code, relating to artificial intelligence.</p>
+        </section>
+
+        <section>
+          <h2>Legislative Counsel's Digest</h2>
+          <p>SB 243, Padilla. Companion chatbots.</p>
+          <p>Existing law requires a social media platform to take various steps
+  to prevent cyberbullying of minors on the platform, including by requiring the
+  platform to establish a prominent mechanism within its internet-based service
+  that allows any individual, whether or not that individual has a profile on the
+  internet-based service, to report cyberbullying or any content that violates the
+  existing terms of service related to cyberbullying. Existing law authorizes the
+  State Department of Public Health to establish the Office of Suicide Prevention in
+  the department, as prescribed.</p>
+          <p>This bill would, among other things related to making a companion
+  chatbot platform safer for users, if a reasonable person interacting with a
+  companion chatbot would be misled to believe that the person is interacting with
+  a human, require an operator of a companion chatbot platform to issue a clear and
+  conspicuous notification indicating that the companion chatbot is artificially
+  generated and not human. The bill would also require an operator to take certain
+  actions with respect to a user the operator knows is a minor, including disclose to
+  the user that the user is interacting with artificial intelligence. The bill would
+  also require an operator to prevent a companion chatbot on its companion chatbot
+  platform from engaging with users unless the operator maintains a protocol for
+  preventing the production of suicidal ideation, suicide, or self-harm content to
+  the user, as specified, and would require an operator to publish details on that
+  protocol on the operator's internet website.</p>
+          <p>This bill would, beginning July 1, 2027, require an operator to annually
+  report to the Office of Suicide Prevention certain things, including protocols
+  put in place to detect, remove, and respond to instances of suicidal ideation by
+  users, and would require the office to post data from that report on its internet
+  website. The bill would authorize a person who suffers injury in fact as a result
+  of noncompliance with the bill to bring a certain civil action.</p>
+        </section>
+
+        <section class="statute-section">
+          <h2>Statutory Text</h2>
+          <p>The people of the State of California do enact as follows:</p>
+          <h3>SECTION 1.</h3>
+          <p>Chapter 22.6 (commencing with Section 22601) is added to Division 8 of
+  the Business and Professions Code, to read:</p>
+          <h4>Chapter 22.6. Companion Chatbots</h4>
+
+          <div class="statute-section">
+            <h5>22601. As used in this chapter:</h5>
+            <ol type="a">
+              <li><span class="annotation annotation-scope" tabindex="0" aria-
+  expanded="false"><strong>&quot;Artificial intelligence&quot;</strong> means an
+  engineered or machine-based system that varies in its level of autonomy and that
+  can, for explicit or implicit objectives, infer from the input it receives how
+  to generate outputs that can influence physical or virtual environments.<span
+  class="annotation-note" role="tooltip"><strong>Scope of the Law.</strong> Defines
+  the artificial intelligence systems that fall within the chapter by describing the
+  technology’s autonomy and impact.</span></span></li>
+              <li>
+                <span class="annotation annotation-scope" tabindex="0" aria-
+  expanded="false"><strong>(1) &quot;Companion chatbot&quot;</strong> means an
+  artificial intelligence system with a natural language interface that provides
+  adaptive, human-like responses to user inputs and is capable of meeting a user's
+  social needs, including by exhibiting anthropomorphic features and being able to
+  sustain a relationship across multiple interactions.<span class="annotation-note"
+  role="tooltip"><strong>Scope of the Law.</strong> Identifies the conversational AI
+  products covered by the statute—systems that mimic human interactions to satisfy
+  social needs.</span></span>
+                <ol type="A">
+                  <li><span class="annotation annotation-exception" tabindex="0"
+  aria-expanded="false"><strong>&quot;Companion chatbot&quot; does not
+  include</strong> a bot that is used only for customer service, a business'
+  operational purposes, productivity and analysis related to source information,
+  internal research, or technical assistance.<span class="annotation-note"
+  role="tooltip"><strong>Exceptions &amp; Safe Harbors.</strong> Exempts enterprise
+  and support bots confined to business operations from the law’s requirements.</
+  span></span></li>
+                  <li><span class="annotation annotation-exception" tabindex="0"
+  aria-expanded="false">A bot that is a feature of a video game and is limited
+  to replies related to the video game that cannot discuss topics related to
+  mental health, self-harm, sexually explicit conduct, or maintain a dialogue
+  on other topics unrelated to the video game.<span class="annotation-note"
+  role="tooltip"><strong>Exceptions &amp; Safe Harbors.</strong> Excludes in-game
+  characters that stay within game-related discussions and avoid sensitive content
+  areas.</span></span></li>
+                  <li><span class="annotation annotation-exception" tabindex="0"
+  aria-expanded="false">A stand-alone consumer electronic device that functions
+  as a speaker and voice command interface, acts as a voice-activated virtual
+  assistant, and does not sustain a relationship across multiple interactions or
+  generate outputs that are likely to elicit emotional responses in the user.<span
+  class="annotation-note" role="tooltip"><strong>Exceptions &amp; Safe Harbors.</
+  strong> Carves out smart speakers and voice assistants lacking ongoing, emotionally
+  oriented engagement.</span></span></li>
+                </ol>
+              </li>
+              <li><span class="annotation annotation-scope" tabindex="0" aria-
+  expanded="false"><strong>&quot;Companion chatbot platform&quot;</strong>
+  means a platform that allows a user to engage with companion chatbots.<span
+  class="annotation-note" role="tooltip"><strong>Scope of the Law.</strong> Clarifies
+  that the law applies to services hosting companion chatbot interactions.</span></
+  span></li>
+              <li><strong>&quot;Office&quot;</strong> means the Office of Suicide
+  Prevention established pursuant to Section 131300 of the Health and Safety Code.</
+  li>
+              <li><span class="annotation annotation-scope" tabindex="0" aria-
+  expanded="false"><strong>&quot;Operator&quot;</strong> means a person who
+  makes a companion chatbot platform available to a user in the state.<span
+  class="annotation-note" role="tooltip"><strong>Scope of the Law.</strong>
+  Identifies the regulated party responsible for compliance—anyone providing the
+  platform to California users.</span></span></li>
+              <li><strong>&quot;Sexually explicit conduct&quot;</strong> has the
+  meaning defined in Section 2256 of Title 18 of the United States Code.</li>
+              <li><strong>&quot;Video game&quot;</strong> means a game played
+  on an electronic amusement device that utilizes a computer, microprocessor, or
+  similar electronic circuitry and its own monitor, or is designed to be used with a
+  television set or a computer monitor, that interacts with the user of the device.</
+  li>
+            </ol>
+          </div>
+
+          <div class="statute-section">
+            <h5>22602.</h5>
+            <ol type="a">
+              <li><span class="annotation annotation-obligation" tabindex="0" aria-
+  expanded="false">If a reasonable person interacting with a companion chatbot would
+  be misled to believe that the person is interacting with a human, an operator
+  shall issue a clear and conspicuous notification indicating that the companion
+  chatbot is artificially generated and not human.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Requires operators to disclose the
+  artificial nature of the chatbot whenever users might mistake it for a person.</
+  span></span></li>
+              <li>
+                <ol type="1">
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">An operator shall prevent a companion chatbot on its
+  companion chatbot platform from engaging with users unless the operator maintains a
+  protocol for preventing the production of suicidal ideation, suicide, or self-harm
+  content to the user, including, but not limited to, by providing a notification
+  to the user that refers the user to crisis service providers, including a suicide
+  hotline or crisis text line, if the user expresses suicidal ideation, suicide,
+  or self-harm.<span class="annotation-note" role="tooltip"><strong>Obligations.</
+  strong> Compels operators to adopt crisis-response protocols, including directing
+  users to hotlines when harmful intent is detected.</span></span></li>
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">The operator shall publish details on the protocol required
+  by this subdivision on the operator's internet website.<span class="annotation-
+  note" role="tooltip"><strong>Obligations.</strong> Mandates public transparency by
+  publishing the safety protocol.</span></span></li>
+                </ol>
+              </li>
+              <li>
+                <span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">An operator shall, for a user that the operator
+  knows is a minor, do all of the following:<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Establishes a bundle of safeguards
+  operators must apply whenever they know a user is a minor.</span></span>
+                <ol type="1">
+                  <li><span class="annotation annotation-obligation"
+  tabindex="0" aria-expanded="false">Disclose to the user that the user is
+  interacting with artificial intelligence.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Requires a direct disclosure to minor
+  users about the AI nature of the chatbot.</span></span></li>
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">Provide by default a clear and conspicuous notification
+  to the user at least every three hours for continuing companion chatbot
+  interactions that reminds the user to take a break and that the companion
+  chatbot is artificially generated and not human.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Imposes recurring reminders to minors
+  to pause use and reiterates the chatbot is artificial.</span></span></li>
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">Institute reasonable measures to prevent its companion
+  chatbot from producing visual material of sexually explicit conduct or directly
+  stating that the minor should engage in sexually explicit conduct.<span
+  class="annotation-note" role="tooltip"><strong>Obligations.</strong> Requires
+  safeguards that block sexual content or solicitations directed at minors.</span></
+  span></li>
+                </ol>
+              </li>
+            </ol>
+          </div>
+
+          <div class="statute-section">
+            <h5>22603.</h5>
+            <ol type="a">
+              <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">Beginning July 1, 2027, an operator shall annually
+  report to the office all of the following:<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Establishes the annual reporting duty
+  operators must meet starting in 2027.</span></span>
+                <ol type="1">
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">The number of times the operator has issued a crisis service
+  provider referral notification pursuant to Section 22602 in the preceding calendar
+  year.<span class="annotation-note" role="tooltip"><strong>Obligations.</strong>
+  Requires disclosure of how often crisis referrals were delivered to users.</span></
+  span></li>
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">Protocols put in place to detect, remove, and respond
+  to instances of suicidal ideation by users.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Demands reporting on detection and
+  response safeguards for self-harm content.</span></span></li>
+                  <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">Protocols put in place to prohibit a companion chatbot
+  response about suicidal ideation or actions with the user.<span class="annotation-
+  note" role="tooltip"><strong>Obligations.</strong> Requires operators to detail how
+  they block chatbot engagement on self-harm topics.</span></span></li>
+                </ol>
+              </li>
+              <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">The report required by this section shall include
+  only the information listed in subdivision (a) and shall not include any
+  identifiers or personal information about users.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Limits the report to aggregate safety
+  data and prohibits including user-identifying information.</span></span></li>
+              <li><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">The office shall post data from a report required
+  by this section on its internet website.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Ensures public transparency by
+  requiring the Office of Suicide Prevention to publish the reported data.</span></
+  span></li>
+              <li><span class="annotation annotation-obligation"
+  tabindex="0" aria-expanded="false">An operator shall use evidence-based
+  methods for measuring suicidal ideation.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Mandates that operators rely on
+  established tools when assessing suicidal ideation metrics.</span></span></li>
+            </ol>
+          </div>
+
+          <div class="statute-section">
+            <h5>22604.</h5>
+            <p><span class="annotation annotation-obligation" tabindex="0"
+  aria-expanded="false">An operator shall disclose to a user of its companion
+  chatbot platform, on the application, the browser, or any other format that
+  a user can use to access the companion chatbot platform, that companion
+  chatbots may not be suitable for some minors.<span class="annotation-note"
+  role="tooltip"><strong>Obligations.</strong> Requires in-product warnings that
+  companion chatbots might be inappropriate for certain minors.</span></span></p>
+          </div>
+
+          <div class="statute-section">
+            <h5>22605.</h5>
+            <p><span class="annotation annotation-enforcement" tabindex="0" aria-
+  expanded="false">A person who suffers injury in fact as a result of a violation of
+  this chapter may bring a civil action to recover all of the following relief:<span
+  class="annotation-note" role="tooltip"><strong>Enforcement &amp; Penalties.</
+  strong> Grants private parties standing to sue operators that violate the
+  chapter.</span></span></p>
+            <ol type="a">
+              <li><span class="annotation annotation-enforcement" tabindex="0"
+  aria-expanded="false">Injunctive relief.<span class="annotation-note"
+  role="tooltip"><strong>Enforcement &amp; Penalties.</strong> Allows courts to order
+  operators to stop noncompliant practices.</span></span></li>
+              <li><span class="annotation annotation-enforcement" tabindex="0" aria-
+  expanded="false">Damages in an amount equal to the greater of actual damages
+  or one thousand dollars ($1,000) per violation.<span class="annotation-note"
+  role="tooltip"><strong>Enforcement &amp; Penalties.</strong> Establishes monetary
+  exposure, setting a statutory minimum of $1,000 per violation.</span></span></li>
+              <li><span class="annotation annotation-enforcement" tabindex="0" aria-
+  expanded="false">Reasonable attorney's fees and costs.<span class="annotation-note"
+  role="tooltip"><strong>Enforcement &amp; Penalties.</strong> Shifts litigation
+  costs to operators, encouraging private enforcement.</span></span></li>
+            </ol>
+          </div>
+
+          <div class="statute-section">
+            <h5>22606.</h5>
+            <p><span class="annotation annotation-enforcement" tabindex="0" aria-
+  expanded="false">The duties, remedies, and obligations imposed by this chapter
+  are cumulative to the duties, remedies, or obligations imposed under other law
+  and shall not be construed to relieve an operator from any duties, remedies,
+  or obligations imposed under any other law.<span class="annotation-note"
+  role="tooltip"><strong>Enforcement &amp; Penalties.</strong> Clarifies that
+  compliance here does not shield operators from liability under other statutes.</
+  span></span></p>
+          </div>
+
+          <div class="statute-section">
+            <h3>SEC. 2.</h3>
+            <p>The provisions of this act are severable. If any provision of this
+  act or its application is held invalid, that invalidity shall not affect other
+  provisions or applications that can be given effect without the invalid provision
+  or application.</p>
+            <p>Approved , 2025</p>
+            <p>Governor</p>
+          </div>
+        </section>
+      </article>
+    </div>
+    <script>
+      (function () {
+        const body = document.body;
+        const toggle = document.getElementById('toggleAnnotations');
+        const annotations = Array.from(document.querySelectorAll('.annotation'));
+
+        function setToggleState(hidden) {
+          toggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+          toggle.textContent = hidden ? 'Show Annotations' : 'Hide Annotations';
+        }
+
+        toggle.addEventListener('click', () => {
+          const hidden = body.classList.toggle('annotations-hidden');
+          if (hidden) {
+            annotations.forEach((ann) => {
+              ann.classList.remove('show-note');
+              ann.setAttribute('aria-expanded', 'false');
+            });
+          }
+          setToggleState(hidden);
+        });
+
+        annotations.forEach((annotation) => {
+          annotation.setAttribute('aria-expanded', 'false');
+          annotation.setAttribute('role', 'button');
+          annotation.setAttribute('aria-haspopup', 'dialog');
+
+          annotation.addEventListener('click', () => {
+            if (body.classList.contains('annotations-hidden')) {
+              return;
+            }
+            if (window.matchMedia('(hover: none)').matches) {
+              annotation.classList.toggle('show-note');
+              const isOpen = annotation.classList.contains('show-note');
+              annotation.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+              if (isOpen) {
+                annotations.forEach((other) => {
+                  if (other !== annotation) {
+                    other.classList.remove('show-note');
+                    other.setAttribute('aria-expanded', 'false');
+                  }
+                });
+              }
+            }
+          });
+
+          annotation.addEventListener('keydown', (event) => {
+            if (body.classList.contains('annotations-hidden')) {
+              return;
+            }
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              annotation.classList.toggle('show-note');
+              const isOpen = annotation.classList.contains('show-note');
+              annotation.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+            if (event.key === 'Escape') {
+              annotation.classList.remove('show-note');
+              annotation.setAttribute('aria-expanded', 'false');
+            }
+          });
+        });
+
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('.annotation')) {
+            annotations.forEach((annotation) => {
+              if (annotation.classList.contains('show-note')) {
+                annotation.classList.remove('show-note');
+                annotation.setAttribute('aria-expanded', 'false');
+              }
+            });
+          }
+        });
+
+        window.addEventListener('beforeprint', () => {
+          body.dataset.wasHidden = body.classList.contains('annotations-hidden') ?
+  'true' : 'false';
+          body.classList.remove('annotations-hidden');
+          setToggleState(false);
+        });
+
+        window.addEventListener('afterprint', () => {
+          if (body.dataset.wasHidden === 'true') {
+            body.classList.add('annotations-hidden');
+            setToggleState(true);
+          }
+          delete body.dataset.wasHidden;
+        });
+      })();
+    </script>
+  </body>
+  </html>
