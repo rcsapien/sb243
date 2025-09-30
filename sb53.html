@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>SB 53 - Transparency in Frontier AI (Annotated)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            background-color: #ffffff;
+            color: #1d1d1f;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background-color: inherit;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 48px;
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .floating-controls {
+            position: fixed;
+            top: 100px;
+            left: 40px;
+            width: 240px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .floating-controls.mobile-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .mobile-fab {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background-color: #0071e3;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(0, 113, 227, 0.4);
+            cursor: pointer;
+            z-index: 101;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-fab:active {
+            transform: scale(0.95);
+        }
+
+        .mobile-fab svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mobile-overlay.active {
+            opacity: 1;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #1d1d1f;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .legend-color.scope { background-color: #007AFF; }
+        .legend-color.obligation { background-color: #34C759; }
+        .legend-color.enforcement { background-color: #FF3B30; }
+        .legend-color.exception { background-color: #FF9500; }
+
+        .controls {
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-btn {
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 980px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+            letter-spacing: -0.01em;
+            width: 100%;
+        }
+
+        .toggle-btn:hover {
+            background-color: #0077ED;
+        }
+
+        .toggle-btn:active {
+            transform: scale(0.98);
+        }
+
+        .law-text {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #1d1d1f;
+        }
+
+        .law-text p {
+            margin-bottom: 20px;
+        }
+
+        .law-text ul {
+            margin-left: 32px;
+            margin-bottom: 20px;
+        }
+
+        .law-text li {
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            color: #1d1d1f;
+            font-size: 21px;
+            letter-spacing: -0.01em;
+        }
+
+        .annotation {
+            position: relative;
+            display: inline;
+            border-bottom: 2px solid;
+            cursor: help;
+            padding: 0;
+            transition: all 0.15s ease;
+        }
+
+        .annotation.scope {
+            border-bottom-color: #007AFF;
+            background-color: rgba(0, 122, 255, 0.08);
+        }
+
+        .annotation.obligation {
+            border-bottom-color: #34C759;
+            background-color: rgba(52, 199, 89, 0.08);
+        }
+
+        .annotation.enforcement {
+            border-bottom-color: #FF3B30;
+            background-color: rgba(255, 59, 48, 0.08);
+        }
+
+        .annotation.exception {
+            border-bottom-color: #FF9500;
+            background-color: rgba(255, 149, 0, 0.08);
+        }
+
+        .annotation:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .annotation-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 12px;
+            padding: 16px 20px;
+            background-color: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #f5f5f7;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+            width: 360px;
+            max-width: 90vw;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+        }
+
+        .annotation-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 8px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.92);
+        }
+
+        .annotation:hover .annotation-tooltip,
+        .annotation.active .annotation-tooltip {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .annotations-hidden .annotation {
+            border-bottom: none;
+            background-color: transparent;
+            cursor: default;
+        }
+
+        .annotations-hidden .annotation-tooltip {
+            display: none !important;
+        }
+
+        @media print {
+            body {
+                background-color: white;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .controls {
+                display: none;
+            }
+
+            .annotation-tooltip {
+                display: block;
+                position: relative;
+                margin: 8px 0;
+                transform: none;
+                left: 0;
+                bottom: auto;
+                width: 100%;
+                page-break-inside: avoid;
+            }
+
+            .annotation-tooltip::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .floating-controls {
+                left: 20px;
+                right: 20px;
+                width: auto;
+                max-width: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 16px;
+                padding-bottom: 100px;
+                color: #1d1d1f;
+            }
+
+            h1 {
+                font-size: 32px;
+                margin-bottom: 32px;
+                line-height: 1.2;
+                color: #1d1d1f;
+            }
+
+            .section-title {
+                font-size: 18px;
+                margin-top: 32px;
+                margin-bottom: 12px;
+                color: #1d1d1f;
+            }
+
+            .law-text {
+                font-size: 15px;
+                line-height: 1.6;
+                color: #1d1d1f;
+            }
+
+            .law-text ul {
+                margin-left: 20px;
+            }
+
+            .annotation-tooltip {
+                width: calc(100vw - 32px);
+                max-width: 320px;
+                font-size: 13px;
+                padding: 12px 16px;
+                left: 16px;
+                right: 16px;
+                transform: none;
+                bottom: auto;
+                top: 100%;
+                margin-bottom: 0;
+                margin-top: 8px;
+            }
+
+            .annotation-tooltip::after {
+                top: auto;
+                bottom: 100%;
+                border-top-color: transparent;
+                border-bottom-color: rgba(0, 0, 0, 0.92);
+            }
+
+            .floating-controls {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                top: auto;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 20px 20px 0 0;
+                padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+                transform: translateY(100%);
+                box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+            }
+
+            .floating-controls.mobile-visible {
+                transform: translateY(0);
+            }
+
+            .mobile-fab {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .mobile-overlay {
+                display: block;
+            }
+
+            .legend {
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .legend-item {
+                font-size: 14px;
+                padding: 2px 0;
+            }
+
+            .toggle-btn {
+                font-size: 15px;
+                padding: 12px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 28px;
+                color: #1d1d1f;
+            }
+
+            .section-title {
+                font-size: 17px;
+                color: #1d1d1f;
+            }
+
+            .law-text {
+                font-size: 14px;
+                color: #1d1d1f;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000;
+                color: #f5f5f7;
+            }
+
+            h1, .section-title, .law-text {
+                color: #f5f5f7;
+            }
+
+            .container {
+                background-color: inherit;
+            }
+
+            .floating-controls {
+                background-color: rgba(28, 28, 30, 0.9);
+                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            }
+
+            .controls {
+                border-top-color: rgba(255, 255, 255, 0.1);
+            }
+
+            .legend-item {
+                color: #f5f5f7;
+            }
+
+            .mobile-overlay {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+
+            .annotation.scope {
+                background-color: rgba(10, 132, 255, 0.15);
+            }
+
+            .annotation.obligation {
+                background-color: rgba(48, 209, 88, 0.15);
+            }
+
+            .annotation.enforcement {
+                background-color: rgba(255, 69, 58, 0.15);
+            }
+
+            .annotation.exception {
+                background-color: rgba(255, 159, 10, 0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <button class="mobile-fab" id="mobileFab" aria-label="Toggle controls">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+    </button>
+
+    <div class="floating-controls" id="floatingControls">
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color scope"></div>
+                <span><strong>Scope</strong></span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color obligation"></div>
+                <span><strong>Obligations</strong></span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color enforcement"></div>
+                <span><strong>Enforcement</strong></span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color exception"></div>
+                <span><strong>Exceptions</strong></span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="toggle-btn" onclick="toggleAnnotations()">Toggle Annotations</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Senate Bill No. 53<br>Transparency in Frontier AI</h1>
+
+        <div class="law-text" id="lawText">
+            <p style="text-align: center;"><strong>Senate Bill No. 53</strong></p>
+            <p style="text-align: center;">Enrolled September 17, 2025</p>
+            <p style="text-align: center;">Passed in Senate September 13, 2025</p>
+            <p style="text-align: center;">Passed in Assembly September 12, 2025</p>
+
+            <div class="section-title">LEGISLATIVE COUNSEL'S DIGEST</div>
+            <p>SB 53, Wiener. Artificial intelligence models: large developers.</p>
+
+            <p>This bill would enact the <span class="annotation scope">Transparency in Frontier Artificial Intelligence Act (TFAIA)<span class="annotation-tooltip">SCOPE: This is the short title of the act. All requirements in this law fall under TFAIA.</span></span> that would, among other things related to ensuring the safety of a foundation model, require a <span class="annotation scope">large frontier developer<span class="annotation-tooltip">SCOPE: Key regulated entity. Defined as a frontier developer with affiliates collectively earning >$500M annually. Most requirements apply specifically to "large" frontier developers, not all frontier developers.</span></span> to write, implement, and clearly and conspicuously publish on its internet website a <span class="annotation obligation">frontier AI framework<span class="annotation-tooltip">OBLIGATION: Large frontier developers MUST create and publish a comprehensive safety framework. This is the central compliance requirement of the law.</span></span> that applies to the large frontier developer's frontier models and describes how the large frontier developer approaches, among other things, incorporating national standards, international standards, and industry-consensus best practices into its frontier AI framework.</p>
+
+            <div class="section-title">SECTION 1. Legislative Findings and Declarations</div>
+
+            <p>The Legislature finds and declares all of the following:</p>
+            <ul>
+                <li>(a) California is leading the world in artificial intelligence innovation and research through companies large and small and through the state's remarkable public and private universities.</li>
+
+                <li>(b) Artificial intelligence, including new advances in foundation models, has the potential to catalyze innovation and the rapid development of a wide range of benefits for Californians and the California economy, including advances in medicine, wildfire forecasting and prevention, and climate science, and to push the bounds of human creativity and capacity.</li>
+
+                <li>(j) Unless they are developed with careful diligence and reasonable precaution, there is concern that advanced artificial intelligence systems could have capabilities that pose <span class="annotation scope">catastrophic risks<span class="annotation-tooltip">SCOPE: Central concept defining what this law regulates. Catastrophic risk means foreseeable material risk of 50+ deaths or $1B+ property damage from specific AI capabilities (WMD assistance, autonomous crimes, loss of control).</span></span> from both malicious uses and malfunctions, including artificial intelligence-enabled hacking, biological attacks, and loss of control.</li>
+
+                <li>(k) With the frontier of artificial intelligence rapidly evolving, there is a need for legislation to track the frontier of artificial intelligence research and alert policymakers and the public to serious risks and harms from the very most advanced artificial intelligence systems, while avoiding burdening smaller companies behind the frontier.</li>
+            </ul>
+
+            <div class="section-title">SECTION 2. Chapter 25.1 - Transparency in Frontier Artificial Intelligence Act</div>
+
+            <div class="section-title">22757.10. Short Title</div>
+            <p>This chapter shall be known as the Transparency in Frontier Artificial Intelligence Act.</p>
+
+            <div class="section-title">22757.11. Definitions</div>
+            <p>For purposes of this chapter:</p>
+
+            <ul>
+                <li>(b) <span class="annotation scope"><strong>"Artificial intelligence model"</strong> means an engineered or machine-based system that varies in its level of autonomy and that can, for explicit or implicit objectives, infer from the input it receives how to generate outputs that can influence physical or virtual environments.<span class="annotation-tooltip">SCOPE: Broad definition of AI model. Foundation for more specific definitions below.</span></span></li>
+
+                <li>(c) <span class="annotation scope"><strong>"Catastrophic risk"</strong> means a foreseeable and material risk that a frontier developer's development, storage, use, or deployment of a frontier model will materially contribute to the death of, or serious injury to, more than 50 people or more than one billion dollars ($1,000,000,000) in damage to, or loss of, property arising from a single incident involving a frontier model doing any of the following:<span class="annotation-tooltip">SCOPE: Defines the threshold of harm this law addresses. Three trigger scenarios: (1) WMD assistance, (2) autonomous harmful conduct (cyberattack/crimes), (3) loss of control. Note: single incident causing 50+ deaths or $1B+ damage.</span></span></span>
+                    <ul>
+                        <li>(A) Providing expert-level assistance in the creation or release of a chemical, biological, radiological, or nuclear weapon.</li>
+                        <li>(B) Engaging in conduct with no meaningful human oversight, intervention, or supervision that is either a cyberattack or, if the conduct had been committed by a human, would constitute the crime of murder, assault, extortion, or theft, including theft by false pretense.</li>
+                        <li>(C) Evading the control of its frontier developer or user.</li>
+                    </ul>
+                </li>
+
+                <li><span class="annotation exception">(2) "Catastrophic risk" does not include a foreseeable and material risk from any of the following:<span class="annotation-tooltip">EXCEPTION: Safe harbors - these scenarios are explicitly excluded from catastrophic risk definition. Key exclusions: publicly available information, lawful federal government activity, harm where AI didn't materially contribute.</span></span></span>
+                    <ul>
+                        <li><span class="annotation exception">(A) Information that a frontier model outputs if the information is otherwise publicly accessible in a substantially similar form from a source other than a foundation model.<span class="annotation-tooltip">EXCEPTION: If the AI only outputs information already publicly available elsewhere, it's not catastrophic risk. This protects models that summarize/retrieve public information.</span></span></span></li>
+                        <li><span class="annotation exception">(B) Lawful activity of the federal government.<span class="annotation-tooltip">EXCEPTION: Authorized federal government use is excluded from catastrophic risk definition.</span></span></span></li>
+                        <li><span class="annotation exception">(C) Harm caused by a frontier model in combination with other software if the frontier model did not materially contribute to the harm.<span class="annotation-tooltip">EXCEPTION: AI must be a material contributor to harm. If other software caused the harm and AI played only a minor role, not catastrophic risk.</span></span></span></li>
+                    </ul>
+                </li>
+
+                <li>(d) <span class="annotation scope"><strong>"Critical safety incident"</strong> means any of the following:<span class="annotation-tooltip">SCOPE: Defines what must be reported to Office of Emergency Services within 15 days (or 24 hours if imminent risk). These are actual incidents, not just risks.</span></span></span>
+                    <ul>
+                        <li>(1) Unauthorized access to, modification of, or exfiltration of, the model weights of a frontier model that results in death or bodily injury.</li>
+                        <li>(2) Harm resulting from the materialization of a catastrophic risk.</li>
+                        <li>(3) Loss of control of a frontier model causing death or bodily injury.</li>
+                        <li>(4) A frontier model that uses deceptive techniques against the frontier developer to subvert the controls or monitoring of its frontier developer outside of the context of an evaluation designed to elicit this behavior and in a manner that demonstrates materially increased catastrophic risk.</li>
+                    </ul>
+                </li>
+
+                <li>(f) <span class="annotation scope"><strong>"Foundation model"</strong> means an artificial intelligence model that is all of the following:<span class="annotation-tooltip">SCOPE: Three-part test for foundation model: (1) trained on broad data, (2) designed for general output, (3) adaptable to wide range of tasks. This is broader than "frontier model."</span></span></span>
+                    <ul>
+                        <li>(1) Trained on a broad data set.</li>
+                        <li>(2) Designed for generality of output.</li>
+                        <li>(3) Adaptable to a wide range of distinctive tasks.</li>
+                    </ul>
+                </li>
+
+                <li>(g) <span class="annotation scope"><strong>"Frontier AI framework"</strong> means documented technical and organizational protocols to manage, assess, and mitigate catastrophic risks.<span class="annotation-tooltip">SCOPE: This is what large frontier developers must create and publish. It's a comprehensive safety management system addressing catastrophic risks.</span></span></span></li>
+
+                <li>(h) <span class="annotation scope"><strong>"Frontier developer"</strong> means a person who has trained, or initiated the training of, a frontier model, with respect to which the person has used, or intends to use, at least as much computing power to train the frontier model as would meet the technical specifications found in subdivision (i).<span class="annotation-tooltip">SCOPE: Defines who is a frontier developer based on compute used for training. Trigger: see next definition for compute threshold.</span></span></span></li>
+
+                <li>(i) <span class="annotation scope"><strong>"Frontier model"</strong> means a foundation model that was trained using a quantity of computing power greater than 10^26 integer or floating-point operations.<span class="annotation-tooltip">SCOPE: THE KEY THRESHOLD. A model is "frontier" if training used >10^26 FLOPs. This computational threshold determines which models trigger regulatory requirements. Subject to annual review and update by Department of Technology.</span></span></span>
+                    <ul>
+                        <li>(2) The quantity of computing power described in paragraph (1) shall include computing for the original training run and for any subsequent fine-tuning, reinforcement learning, or other material modifications the developer applies to a preceding foundation model.</li>
+                    </ul>
+                </li>
+
+                <li>(j) <span class="annotation scope"><strong>"Large frontier developer"</strong> means a frontier developer that together with its affiliates collectively had annual gross revenues in excess of five hundred million dollars ($500,000,000) in the preceding calendar year.<span class="annotation-tooltip">SCOPE: Revenue threshold determining "large" status. $500M+ annual revenue (including affiliates) = "large." Most stringent requirements apply only to large frontier developers. This exempts smaller companies and research institutions.</span></span></span></li>
+
+                <li>(k) <span class="annotation scope"><strong>"Model weight"</strong> means a numerical parameter in a frontier model that is adjusted through training and that helps determine how inputs are transformed into outputs.<span class="annotation-tooltip">SCOPE: Defines model weights, which are subject to cybersecurity protection requirements. These are the trained parameters that make the model work - essentially the "brain" of the AI.</span></span></span></li>
+            </ul>
+
+            <div class="section-title">22757.12. Operator Requirements</div>
+
+            <p>(a) <span class="annotation obligation">A large frontier developer <strong>shall write, implement, comply with, and clearly and conspicuously publish</strong> on its internet website a frontier AI framework that applies to the large frontier developer's frontier models and describes how the large frontier developer approaches all of the following:<span class="annotation-tooltip">OBLIGATION: The core requirement. Large frontier developers MUST: (1) write framework, (2) implement it, (3) comply with it, (4) publish it publicly. Covers all aspects of catastrophic risk management. This is enforceable - see Section 22757.15.</span></span></span></p>
+
+            <ul>
+                <li><span class="annotation obligation">(1) Incorporating national standards, international standards, and industry-consensus best practices into its frontier AI framework.<span class="annotation-tooltip">OBLIGATION: Framework must describe how developer incorporates existing standards and best practices (e.g., NIST AI RMF, international standards).</span></span></span></li>
+
+                <li><span class="annotation obligation">(2) Defining and assessing thresholds used by the large frontier developer to identify and assess whether a frontier model has capabilities that could pose a catastrophic risk, which may include multiple-tiered thresholds.<span class="annotation-tooltip">OBLIGATION: Developers must establish specific capability thresholds that trigger safety reviews. Can use tiered approach (yellow/red lines). Must document these thresholds publicly.</span></span></span></li>
+
+                <li><span class="annotation obligation">(3) Applying mitigations to address the potential for catastrophic risks based on the results of assessments undertaken pursuant to paragraph (2).<span class="annotation-tooltip">OBLIGATION: Must describe how mitigations are selected and applied based on risk assessments. This is the "response" part of assess-and-mitigate cycle.</span></span></span></li>
+
+                <li><span class="annotation obligation">(4) Reviewing assessments and adequacy of mitigations as part of the decision to deploy a frontier model or use it extensively internally.<span class="annotation-tooltip">OBLIGATION: Pre-deployment gate. Must review risks and mitigations before deploying OR extensive internal use. Prevents deployment of inadequately protected models.</span></span></span></li>
+
+                <li><span class="annotation obligation">(5) Using third parties to assess the potential for catastrophic risks and the effectiveness of mitigations of catastrophic risks.<span class="annotation-tooltip">OBLIGATION: Must describe approach to third-party testing/red-teaming. Encourages external validation of safety claims.</span></span></span></li>
+
+                <li><span class="annotation obligation">(6) Revisiting and updating the frontier AI framework, including any criteria that trigger updates and how the large frontier developer determines when its frontier models are substantially modified enough to require disclosures pursuant to subdivision (c).<span class="annotation-tooltip">OBLIGATION: Framework must be living document. Must describe update triggers and how to determine when model changes require new transparency reports.</span></span></span></li>
+
+                <li><span class="annotation obligation">(7) Cybersecurity practices to secure unreleased model weights from unauthorized modification or transfer by internal or external parties.<span class="annotation-tooltip">OBLIGATION: Must describe cybersecurity measures protecting model weights from theft/tampering. Addresses both insider threats and external attackers.</span></span></span></li>
+
+                <li><span class="annotation obligation">(8) Identifying and responding to critical safety incidents.<span class="annotation-tooltip">OBLIGATION: Must have incident identification and response protocols. Connects to mandatory reporting requirements in Section 22757.13.</span></span></span></li>
+
+                <li><span class="annotation obligation">(9) Instituting internal governance practices to ensure implementation of these processes.<span class="annotation-tooltip">OBLIGATION: Must describe organizational structure/processes ensuring the framework is actually followed. Addresses accountability and oversight.</span></span></span></li>
+
+                <li><span class="annotation obligation">(10) Assessing and managing catastrophic risk resulting from the internal use of its frontier models, including risks resulting from a frontier model circumventing oversight mechanisms.<span class="annotation-tooltip">OBLIGATION: Must address risks from internal use, not just external deployment. Includes risks of AI evading monitoring ("alignment faking" scenarios).</span></span></span></li>
+            </ul>
+
+            <p>(b) <span class="annotation obligation">(1) A large frontier developer <strong>shall review and, as appropriate, update</strong> its frontier AI framework at least once per year.<span class="annotation-tooltip">OBLIGATION: Annual framework review required at minimum. Must update "as appropriate" - this is a continuing duty to maintain current practices.</span></span></span></p>
+
+            <p><span class="annotation obligation">(2) If a large frontier developer makes a material modification to its frontier AI framework, the large frontier developer <strong>shall clearly and conspicuously publish</strong> the modified frontier AI framework and a justification for that modification within 30 days.<span class="annotation-tooltip">OBLIGATION: Material framework changes must be published within 30 days with justification. Ensures public can track how safety approaches evolve.</span></span></span></p>
+
+            <p>(c) <span class="annotation obligation">(1) Before, or concurrently with, deploying a new frontier model or a substantially modified version of an existing frontier model, a frontier developer <strong>shall clearly and conspicuously publish</strong> on its internet website a transparency report containing all of the following:<span class="annotation-tooltip">OBLIGATION: Pre-deployment (or concurrent) transparency report required for ALL frontier developers (not just "large"). Basic model card information. Trigger: new model deployment or substantial modification.</span></span></span></p>
+
+            <ul>
+                <li>(A) The internet website of the frontier developer.</li>
+                <li>(B) A mechanism that enables a natural person to communicate with the frontier developer.</li>
+                <li>(C) The release date of the frontier model.</li>
+                <li>(D) The languages supported by the frontier model.</li>
+                <li>(E) The modalities of output supported by the frontier model.</li>
+                <li>(F) The intended uses of the frontier model.</li>
+                <li>(G) Any generally applicable restrictions or conditions on uses of the frontier model.</li>
+            </ul>
+
+            <p><span class="annotation obligation">(2) Before, or concurrently with, deploying a new frontier model or a substantially modified version of an existing frontier model, a large frontier developer <strong>shall include</strong> in the transparency report required by paragraph (1) summaries of all of the following:<span class="annotation-tooltip">OBLIGATION: LARGE frontier developers must add safety assessment summaries to their transparency reports. This is on top of basic transparency report. Provides public visibility into safety testing results.</span></span></span></p>
+
+            <ul>
+                <li>(A) Assessments of catastrophic risks from the frontier model conducted pursuant to the large frontier developer's frontier AI framework.</li>
+                <li>(B) The results of those assessments.</li>
+                <li>(C) The extent to which third-party evaluators were involved.</li>
+                <li>(D) Other steps taken to fulfill the requirements of the frontier AI framework with respect to the frontier model.</li>
+            </ul>
+
+            <p>(d) <span class="annotation obligation">A large frontier developer <strong>shall transmit</strong> to the Office of Emergency Services a summary of any assessment of catastrophic risk resulting from internal use of its frontier models every three months or pursuant to another reasonable schedule specified by the large frontier developer and communicated in writing to the Office of Emergency Services with written updates, as appropriate.<span class="annotation-tooltip">OBLIGATION: Quarterly confidential reporting to Cal OES on internal use risk assessments. Developer can propose alternative schedule but must communicate it. Addresses risks before public deployment.</span></span></span></p>
+
+            <p>(e) <span class="annotation obligation">(1) (A) A frontier developer <strong>shall not</strong> make a materially false or misleading statement about catastrophic risk from its frontier models or its management of catastrophic risk.<span class="annotation-tooltip">OBLIGATION: Prohibition on false/misleading safety claims. Applies to ALL frontier developers. Enforced via civil penalties (Section 22757.15).</span></span></span></p>
+
+            <p><span class="annotation obligation">(B) A large frontier developer <strong>shall not</strong> make a materially false or misleading statement about its implementation of, or compliance with, its frontier AI framework.<span class="annotation-tooltip">OBLIGATION: Additional prohibition for large developers - can't lie about framework implementation or compliance. Creates accountability for published commitments.</span></span></span></p>
+
+            <p><span class="annotation exception">(2) This subdivision does not apply to a statement that was made in good faith and was reasonable under the circumstances.<span class="annotation-tooltip">EXCEPTION: Good faith safe harbor. Honest mistakes made on reasonable grounds don't violate the law. Scienter requirement - must be materially false/misleading AND lack good faith.</span></span></span></p>
+
+            <p>(f) <span class="annotation exception">(1) When a frontier developer publishes documents to comply with this section, the frontier developer may make redactions to those documents that are necessary to protect the frontier developer's trade secrets, the frontier developer's cybersecurity, public safety, or the national security of the United States or to comply with any federal or state law.<span class="annotation-tooltip">EXCEPTION: Developers can redact sensitive information from public disclosures for legitimate reasons: trade secrets, cybersecurity, public safety, national security, legal compliance. Balances transparency with security.</span></span></span></p>
+
+            <p><span class="annotation obligation">(2) If a frontier developer redacts information in a document pursuant to this subdivision, the frontier developer <strong>shall describe</strong> the character and justification of the redaction in any published version of the document to the extent permitted by the concerns that justify redaction and <strong>shall retain</strong> the unredacted information for five years.<span class="annotation-tooltip">OBLIGATION: Redactions must be explained and justified. Unredacted versions must be retained for 5 years (for potential investigations). Can't use redactions as blanket shield.</span></span></span></p>
+
+            <div class="section-title">22757.13. Critical Safety Incident Reporting</div>
+
+            <p>(a) The Office of Emergency Services shall establish a mechanism to be used by a frontier developer or a member of the public to report a critical safety incident that includes all of the following:</p>
+
+            <ul>
+                <li>(1) The date of the critical safety incident.</li>
+                <li>(2) The reasons the incident qualifies as a critical safety incident.</li>
+                <li>(3) A short and plain statement describing the critical safety incident.</li>
+                <li>(4) Whether the incident was associated with internal use of a frontier model.</li>
+            </ul>
+
+            <p>(b) The Office of Emergency Services shall establish a mechanism to be used by a large frontier developer to confidentially submit summaries of any assessments of the potential for catastrophic risk resulting from internal use of its frontier models.</p>
+
+            <p>(c) <span class="annotation obligation">(1) Subject to paragraph (2), a frontier developer <strong>shall report</strong> any critical safety incident pertaining to one or more of its frontier models to the Office of Emergency Services within 15 days of discovering the critical safety incident.<span class="annotation-tooltip">OBLIGATION: Mandatory incident reporting within 15 days of discovery. Applies to all frontier developers. Clock starts at discovery, not occurrence.</span></span></span></p>
+
+            <p><span class="annotation obligation">(2) If a frontier developer discovers that a critical safety incident poses an imminent risk of death or serious physical injury, the frontier developer <strong>shall disclose</strong> that incident within 24 hours to an authority, including any law enforcement agency or public safety agency with jurisdiction, that is appropriate based on the nature of that incident and as required by law.<span class="annotation-tooltip">OBLIGATION: EMERGENCY reporting - 24 hours for imminent risk incidents. Report to appropriate authority (law enforcement, public safety) not just Cal OES. Ensures immediate response capability.</span></span></span></p>
+
+            <p>(g) (1) Beginning January 1, 2027, and annually thereafter, the Office of Emergency Services shall produce a report with anonymized and aggregated information about critical safety incidents that have been reviewed by the Office of Emergency Services since the preceding report.</p>
+
+            <p>(h-j) <span class="annotation exception">The Office of Emergency Services may adopt regulations designating federal laws, regulations, or guidance documents that meet specified conditions. A frontier developer that declares intent to comply with designated federal requirements <strong>shall be deemed in compliance</strong> with this section to the extent that the frontier developer meets those federal standards.<span class="annotation-tooltip">EXCEPTION: Federal preemption pathway. If federal requirements are substantially equivalent or stricter, developers can comply with federal rules instead. Cal OES must formally designate which federal requirements qualify. Avoids duplicative compliance burdens.</span></span></span></p>
+
+            <div class="section-title">22757.14. Department of Technology Review and Recommendations</div>
+
+            <p>(a) On or before January 1, 2027, and annually thereafter, the Department of Technology shall assess recent evidence and developments relevant to the purposes of this chapter and shall make recommendations about whether and how to update any of the following definitions for the purposes of this chapter to ensure that they accurately reflect technological developments, scientific literature, and widely accepted national and international standards:</p>
+
+            <ul>
+                <li>(1) "Frontier model" so that it applies to foundation models at the frontier of artificial intelligence development.</li>
+                <li>(2) "Frontier developer" so that it applies to developers of frontier models who are themselves at the frontier of artificial intelligence development.</li>
+                <li>(3) "Large frontier developer" so that it applies to well-resourced frontier developers.</li>
+            </ul>
+
+            <p>(b) In making recommendations pursuant to this section, the Department of Technology shall take into account all of the following:</p>
+
+            <ul>
+                <li>(1) Similar thresholds used in international standards or federal law, guidance, or regulations for the management of catastrophic risk and shall align with a definition adopted in a federal law or regulation to the extent that it is consistent with the purposes of this chapter.</li>
+                <li>(2) Input from stakeholders, including academics, industry, the open-source community, and governmental entities.</li>
+                <li>(3) The extent to which a person will be able to determine, before beginning to train or deploy a foundation model, whether that person will be subject to the definition as a frontier developer or as a large frontier developer with an aim toward allowing earlier determinations if possible.</li>
+                <li>(4) The complexity of determining whether a person or foundation model is covered, with an aim toward allowing simpler determinations if possible.</li>
+                <li>(5) The external verifiability of determining whether a person or foundation model is covered, with an aim toward definitions that are verifiable by parties other than the frontier developer.</li>
+            </ul>
+
+            <div class="section-title">22757.15. Civil Penalties and Enforcement</div>
+
+            <p>(a) <span class="annotation enforcement">A large frontier developer that fails to publish or transmit a compliant document required to be published or transmitted under this chapter, makes a statement in violation of subdivision (e) of Section 22757.12, fails to report an incident as required by Section 22757.13, or fails to comply with its own frontier AI framework <strong>shall be subject to a civil penalty</strong> in an amount dependent upon the severity of the violation that does not exceed one million dollars ($1,000,000) per violation.<span class="annotation-tooltip">ENFORCEMENT: Civil penalties up to $1M per violation for: (1) failure to publish/transmit required documents, (2) false/misleading statements, (3) failure to report incidents, (4) failure to comply with own framework. "Per violation" allows penalties to scale with severity/number of violations.</span></span></span></p>
+
+            <p>(b) <span class="annotation enforcement">A civil penalty described in this section <strong>shall be recovered in a civil action brought only by the Attorney General</strong>.<span class="annotation-tooltip">ENFORCEMENT: Exclusive enforcement by California Attorney General. No private right of action. AG has prosecutorial discretion in enforcement.</span></span></span></p>
+
+            <div class="section-title">SECTION 3. CalCompute Consortium</div>
+
+            <p>(a-k) The bill establishes within the Government Operations Agency a consortium to develop a framework for the creation of "CalCompute" - a public cloud computing cluster to advance safe, ethical, equitable, and sustainable AI development. The consortium shall submit a framework report to the Legislature by January 1, 2027, and will then be dissolved. This section shall become operative only upon an appropriation in a budget act, or other measure, for the purposes of this section.</p>
+
+            <div class="section-title">SECTION 4. Whistleblower Protections</div>
+
+            <div class="section-title">1107. Definitions</div>
+
+            <p>For purposes of this chapter:</p>
+
+            <ul>
+                <li>(b) <span class="annotation scope"><strong>"Covered employee"</strong> means an employee responsible for assessing, managing, or addressing risk of critical safety incidents.<span class="annotation-tooltip">SCOPE: Defines which employees get enhanced whistleblower protections. Applies to employees working on safety/risk assessment, not all employees of frontier developers.</span></span></span></li>
+            </ul>
+
+            <div class="section-title">1107.1. Whistleblower Protections</div>
+
+            <p>(a) <span class="annotation obligation">A frontier developer <strong>shall not</strong> make, adopt, enforce, or enter into a rule, regulation, policy, or contract that prevents a covered employee from disclosing, or retaliates against a covered employee for disclosing, information to the Attorney General, a federal authority, a person with authority over the covered employee, or another covered employee who has authority to investigate, discover, or correct the reported issue, if the covered employee has reasonable cause to believe that the information discloses either of the following:<span class="annotation-tooltip">OBLIGATION: Strong anti-retaliation protection. Developers cannot: (1) prevent disclosures, (2) retaliate for disclosures. Protected disclosures: to AG, federal authorities, supervisors, or other employees with authority. Trigger: reasonable cause to believe disclosure shows catastrophic risk or TFAIA violation.</span></span></span></p>
+
+            <ul>
+                <li>(1) The frontier developer's activities pose a specific and substantial danger to the public health or safety resulting from a catastrophic risk.</li>
+                <li>(2) The frontier developer has violated Chapter 25.1 (commencing with Section 22757.10) of Division 8 of the Business and Professions Code.</li>
+            </ul>
+
+            <p>(b) <span class="annotation obligation">A frontier developer <strong>shall not</strong> enter into a contract that prevents a covered employee from making a disclosure protected under Section 1102.5.<span class="annotation-tooltip">OBLIGATION: Cannot use NDAs or contracts to prevent disclosures protected by broader California whistleblower law (Section 1102.5). Prevents gag clauses.</span></span></span></p>
+
+            <p>(d) <span class="annotation obligation">A frontier developer <strong>shall provide</strong> a clear notice to all covered employees of their rights and responsibilities under this section, including by doing either of the following:<span class="annotation-tooltip">OBLIGATION: Developers must affirmatively notify covered employees of whistleblower rights. Two compliance options: (1) posted workplace notices + notices to remote workers, OR (2) annual written notice with acknowledgment.</span></span></span></p>
+
+            <ul>
+                <li>(1) At all times posting and displaying within any workplace maintained by the frontier developer a notice to all covered employees of their rights under this section, ensuring that any new covered employee receives equivalent notice, and ensuring that any covered employee who works remotely periodically receives an equivalent notice.</li>
+                <li>(2) At least once each year, providing written notice to each covered employee of the covered employee's rights under this section and ensuring that the notice is received and acknowledged by all of those covered employees.</li>
+            </ul>
+
+            <p>(e) <span class="annotation obligation">(1) A large frontier developer <strong>shall provide</strong> a reasonable internal process through which a covered employee may anonymously disclose information to the large frontier developer if the covered employee believes in good faith that the information indicates that the large frontier developer's activities present a specific and substantial danger to the public health or safety resulting from a catastrophic risk or that the large frontier developer violated Chapter 25.1 (commencing with Section 22757.10) of Division 8 of the Business and Professions Code, including a monthly update to the person who made the disclosure regarding the status of the large frontier developer's investigation of the disclosure and the actions taken by the large frontier developer in response to the disclosure.<span class="annotation-tooltip">OBLIGATION: LARGE frontier developers must create anonymous internal reporting system. Required features: (1) anonymity protection, (2) monthly status updates to whistleblower on investigation and actions taken. Creates internal escalation path before external reporting.</span></span></span></p>
+
+            <p><span class="annotation obligation">(2) (A) Except as provided in subparagraph (B), the disclosures and responses of the process required by this subdivision <strong>shall be shared</strong> with officers and directors of the large frontier developer at least once each quarter.<span class="annotation-tooltip">OBLIGATION: Internal whistleblower reports must reach top leadership (officers/directors) quarterly. Ensures board-level awareness of safety concerns.</span></span></span></p>
+
+            <p><span class="annotation exception">(B) If a covered employee has alleged wrongdoing by an officer or director of the large frontier developer in a disclosure or response, subparagraph (A) shall not apply with respect to that officer or director.<span class="annotation-tooltip">EXCEPTION: If whistleblower alleges wrongdoing by specific officer/director, that person doesn't receive the report. Prevents retaliation and conflicts of interest.</span></span></span></p>
+
+            <p>(f) <span class="annotation enforcement">The court is authorized to award reasonable attorney's fees to a plaintiff who brings a successful action for a violation of this section.<span class="annotation-tooltip">ENFORCEMENT: Fee-shifting for successful whistleblower plaintiffs. Makes it economically viable to bring retaliation claims. Deters violations.</span></span></span></p>
+
+            <p>(g) <span class="annotation enforcement">In a civil action brought pursuant to this section, once it has been demonstrated by a preponderance of the evidence that an activity proscribed by this section was a contributing factor in the alleged prohibited action against the covered employee, the frontier developer <strong>shall have the burden of proof</strong> to demonstrate by clear and convincing evidence that the alleged action would have occurred for legitimate, independent reasons even if the covered employee had not engaged in activities protected by this section.<span class="annotation-tooltip">ENFORCEMENT: Burden-shifting in retaliation cases. Once employee shows whistleblowing was "a contributing factor" in adverse action (preponderance standard), employer must prove by clear and convincing evidence they would have taken action anyway for legitimate reasons. Protects whistleblowers.</span></span></span></p>
+
+            <p>(h) <span class="annotation enforcement">In a civil action or administrative proceeding brought pursuant to this section, a covered employee may petition the superior court for appropriate temporary or preliminary injunctive relief. An order authorizing temporary injunctive relief shall remain in effect until an administrative or judicial determination has been issued. In addition to any harm resulting directly from a violation of this section, the court shall consider the chilling effect on other covered employees asserting their rights under this section in determining whether temporary injunctive relief is just and proper.<span class="annotation-tooltip">ENFORCEMENT: Whistleblowers can get preliminary injunctions (e.g., reinstatement pending trial). Court must consider chilling effect on other potential whistleblowers. Provides immediate relief before full trial.</span></span></span></p>
+
+            <div class="section-title">SECTION 5. General Provisions</div>
+
+            <p>(f) <span class="annotation scope">This act <strong>preempts</strong> any rule, regulation, code, ordinance, or other law adopted by a city, county, city and county, municipality, or local agency on or after January 1, 2025, specifically related to the regulation of frontier developers with respect to their management of catastrophic risk.<span class="annotation-tooltip">SCOPE: State preemption of local laws. Cities/counties cannot regulate frontier developers' catastrophic risk management. Creates uniform statewide standard. Only applies to local laws adopted on/after Jan 1, 2025.</span></span></span></p>
+
+            <p style="text-align: center; margin-top: 40px;">✦ ✦ ✦</p>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleAnnotations() {
+            const lawText = document.getElementById('lawText');
+            lawText.classList.toggle('annotations-hidden');
+        }
+
+        // Mobile controls
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileFab = document.getElementById('mobileFab');
+            const floatingControls = document.getElementById('floatingControls');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            const annotations = document.querySelectorAll('.annotation');
+
+            function openMobileControls() {
+                floatingControls.classList.add('mobile-visible');
+                mobileOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileControls() {
+                floatingControls.classList.remove('mobile-visible');
+                mobileOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            mobileFab.addEventListener('click', openMobileControls);
+            mobileOverlay.addEventListener('click', closeMobileControls);
+
+            // Mobile touch support for tooltips
+            annotations.forEach(annotation => {
+                annotation.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+
+                        // Close other active annotations
+                        annotations.forEach(other => {
+                            if (other !== this) {
+                                other.classList.remove('active');
+                            }
+                        });
+
+                        this.classList.toggle('active');
+                    }
+                });
+            });
+
+            // Close tooltips when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.annotation')) {
+                    annotations.forEach(annotation => {
+                        annotation.classList.remove('active');
+                    });
+                }
+            });
+
+            // Close mobile controls when toggle annotations is clicked
+            const toggleBtn = document.querySelector('.toggle-btn');
+            toggleBtn.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    closeMobileControls();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
